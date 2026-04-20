@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Tracker|People</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html"><strong>BugTracker</strong></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="issue-form.html"> New Issue</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="people.html"> People</a></li>
+                    <li class="nav-item"><a class="nav-link" href="projects.html"> Projects</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container my-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1> People Management</h1>
+                <p class="text-muted">Manage team members who can be assigned to issues</p>
+            </div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#personModal" onclick="openPersonModal()">
+                <i class="fas fa-user-plus"></i> Add Person
+            </button>
+        </div>
+        
+        <div class="row" id="peopleGrid">
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2">Loading people...</p>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="personModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="personModalTitle">Add Person</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="personForm">
+                        <input type="hidden" id="personId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3"><label class="form-label">First Name</label><input type="text" id="firstName" class="form-control" required></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Last Name</label><input type="text" id="lastName" class="form-control" required></div>
+                        </div>
+                        <div class="mb-3"><label class="form-label">Email</label><input type="email" id="email" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label">Username</label><input type="text" id="username" class="form-control" required></div>
+                        <div class="mb-3"><label class="form-label">Profile Picture</label><input type="file" id="profilePic" class="form-control" accept="image/*"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="savePerson()">Save Person</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast" role="alert">
+            <div class="toast-header"><i class="fas fa-bell me-2"></i><strong class="me-auto">Notification</strong><button type="button" class="btn-close" data-bs-dismiss="toast"></button></div>
+            <div class="toast-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
