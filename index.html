@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Tracker|Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/IFFavicon1.png">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/IFFavicon1.png" alt="logo" class="logo">
+                <strong>BugTracker</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="issue-form.html">
+                             New Issue
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="people.html">
+                             People
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="projects.html">
+                             Projects
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="container my-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="display-6">
+                    </i> Issue Dashboard
+                </h1>
+                <p class="text-muted">Track and manage all project issues in one place</p>
+            </div>
+            <a href="issue-form.html" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus"></i> Create New Issue
+            </a>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-folder"></i> Filter by Project
+                        </label>
+                        <select id="filterProject" class="form-select">
+                            <option value="all">All Projects</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-flag"></i> Filter by Priority
+                        </label>
+                        <select id="filterPriority" class="form-select">
+                            <option value="all">All Priorities</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-search"></i> Search
+                        </label>
+                        <input type="text" id="searchInput" class="form-control" 
+                               placeholder="Search by summary or person...">
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <button id="resetFilters" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-undo-alt"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header status-open">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>OPEN</strong>
+                            </div>
+                            <span class="badge bg-secondary rounded-pill" id="openCount">0</span>
+                        </div>
+                        <small class="text-muted">Issues that need attention</small>
+                    </div>
+                    <div class="card-body" style="max-height: 70vh; overflow-y: auto;">
+                        <div id="openIssuesList">
+                            <div class="text-center text-muted py-4">
+                                No open issues
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header status-progress">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>IN PROGRESS</strong>
+                            </div>
+                            <span class="badge bg-secondary rounded-pill" id="progressCount">0</span>
+                        </div>
+                        <small class="text-muted">Currently being worked on</small>
+                    </div>
+                    <div class="card-body" style="max-height: 70vh; overflow-y: auto;">
+                        <div id="progressIssuesList">
+                            <div class="text-center text-muted py-4">
+                                No issues in progress
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-header status-resolved">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>RESOLVED</strong>
+                            </div>
+                            <span class="badge bg-secondary rounded-pill" id="resolvedCount">0</span>
+                        </div>
+                        <small class="text-muted">Completed issues</small>
+                    </div>
+                    <div class="card-body" style="max-height: 70vh; overflow-y: auto;">
+                        <div id="resolvedIssuesList">
+                            <div class="text-center text-muted py-4">
+                                No resolved issues
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast" role="alert">
+            <div class="toast-header">
+                <i class="fas fa-bell me-2"></i>
+                <strong class="me-auto">Notification</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body"></div>
+        </div>
+    </div>
+
+    <template id="issueCardTemplate">
+        <div class="card mb-3 issue-card" data-issue-id="">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="card-title mb-0 fw-bold issue-summary"></h6>
+                    <span class="priority-badge"></span>
+                </div>
+                <p class="small text-muted mb-2 issue-description"></p>
+                <div class="mb-2">
+                    <span class="badge bg-light text-dark me-1">
+                        <i class="fas fa-folder"></i> <span class="issue-project"></span>
+                    </span>
+                    <span class="badge bg-light text-dark">
+                        <i class="fas fa-user"></i> <span class="issue-assignee"></span>
+                    </span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        <i class="far fa-calendar-alt"></i> Due: <span class="issue-due-date"></span>
+                    </small>
+                    <button class="btn btn-sm btn-outline-primary view-issue-btn">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
