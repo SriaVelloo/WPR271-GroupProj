@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IssueFlow | Home</title>
+    <link rel="stylesheet" href="home.css">
+    <link rel="shortcut icon" href="images/IFFavicon1.png" type="image/x-png">
+</head>
+<body>
+        <img class = "logo" src="images/IFLogoTransparent1.png" alt="logo">
+        <ul class = "navbar">
+            <li><a href="bugs.html" target = "_blank">Bugs</a></li>
+            <li><a href="projects.html" target = "_blank">Projects</a></li>
+            <li><a href="people.html" target = "_blank">People</a></li>
+            <li><a href="home.html" target = "_blank">Home</a></li>
+        </ul>
+        <div class = "bugform">
+        <form action="getbug">
+            <fieldset>
+            <legend class = "buglegend">Submit a Bug:</legend>
+            <label for="bname">Enter Bug Name:</label><br>
+            <input type="text" id="bname" name="bname" required><br>
+            <label for="bdesc">Enter Bug Description:</label><br>
+            <input type="text" id="bdesc" name="bdesc" required><br>
+            <label for="bsum">Enter Summary of the Bug:</label><br>
+            <input type="text" id="bsum" name="bsum" required><br>
+            <label for="bident">Enter Username of the Identifier of the Bug:</label><br>
+            <input type="text" id="bident" name="bident" required><br>
+            <label for="bdatesub">Enter Date of Bug Submission:</label><br>
+            <input type="date" id="bdatesub" name="bdatesub" required><br>
+            <label for="bproj">Enter Project Name of the Bug:</label><br>
+            <input type="text" id="bproj" name="bproj" required><br>
+            <label for="bassi">Enter Username the Bug is Assigned to:</label><br>
+            <input type="text" id="bassi" name="bassi" required><br>
+            <label for="bstat">Enter Bug's Status:</label><br>
+            <input type="radio" id="open" name="bstat" value="Open" required>
+            <label for="open">Open</label><br>
+            <input type="radio" id="resolved" name="bstat" value="Resolved" required>
+            <label for="resolved">Resolved</label><br>
+            <input type="radio" id="overdue" name="bstat" value="Overdue" required>
+            <label for="overdue">Overdue</label><br>
+            <label for="bprio">Enter Priority of the Bug:</label><br>
+            <input type="radio" id="low" name="bprio" value="Low" required>
+            <label for="low">Low</label><br>
+            <input type="radio" id="medium" name="bprio" value="Medium" required>
+            <label for="medium">Medium</label><br>
+            <input type="radio" id="high" name="bprio" value="High" required>
+            <label for="high">High</label><br>
+            <label for="bdatetarres">Enter Target Date of Bug Resolution:</label><br>
+            <input type="date" id="bdatetarres" name="bdatetarres" required><br>
+            <button type="submit">Submit Bug</button>
+            </fieldset>
+        </form>
+        <p id="message"></p>
+        </div>
+
+    <script>
+        const bugForm = document.querySelector('form[action="getbug"]');
+        const message = document.getElementById('message');
+
+        bugForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+        const bugData = {
+            bname: document.getElementById('bname').value,
+            bdesc: document.getElementById('bdesc').value,
+            bsum: document.getElementById('bsum').value,
+            bident: document.getElementById('bident').value,
+            bdatesub: document.getElementById('bdatesub').value,
+            bproj: document.getElementById('bproj').value,
+            bassi: document.getElementById('bassi').value,
+            bstat: document.querySelector('input[name="bstat"]:checked').value,
+            bprio: document.querySelector('input[name="bprio"]:checked').value,
+            bdatetarres: document.getElementById('bdatetarres').value
+        };
+
+        const bugs = JSON.parse(localStorage.getItem('bugs') || '[]');
+        bugs.push(bugData);
+        localStorage.setItem('bugs', JSON.stringify(bugs));
+        message.textContent = "Bug submitted successfully!";
+        message.style.color = "#fec94e";
+        bugForm.reset();
+});
+    </script>
+</body>
+</html>

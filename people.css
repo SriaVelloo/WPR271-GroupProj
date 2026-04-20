@@ -1,0 +1,114 @@
+/* 
+turqouise: #3fac9c
+grey: #828d95
+dark grey: #696e72
+light grey: #b8bcbe
+yellow: #fec94e
+*/
+body{
+    font-family: 'Quicksand', sans-serif;
+    background-color: #b8bcbe;
+    color: #ffffff;
+}
+.logo{
+    height: 450px;
+    margin-left: 80px;
+    margin-top: -125px;
+    position: absolute;
+}
+ul{
+    list-style: none;
+    margin-top: 50px;
+    margin-left: -10px;
+    margin-right: -10px;
+    padding: 10px;
+    padding-right: 80px;
+    overflow: hidden;
+    background-color: #828d95;
+}
+ul li {
+    float: right;
+    padding-right: 30px;
+}
+ul li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transform: scale(1);
+    transition: opacity 3.5s ease transform 0.1s ease;
+}
+ul li a:hover {
+    color: #fec94e;
+    background-color: #3fac9c;
+    animation-name: anizoom;
+    transform: scale(1.5);
+    transition: transform 0.1s ease;
+}
+@keyframes anizoom{
+    from {transform: scale(1)};
+    to {transform: scale(1.5)};
+}
+a {
+    font-size: small;
+    color: #fec94e;
+}
+a:hover {
+    font-size: medium;
+}
+button{
+    font-size: 18px;
+    margin: 15px;
+    padding: 12px;
+    border-radius: 15px;
+    color: #fec94e;
+    background-color: #696e72;
+    border-color: #fec94e;
+}
+h1{
+    margin-top: 200px;
+    color: #fec94e;
+    background-color: #828d95;
+    line-height: 80px;
+    padding-left: 80px;
+    margin-left: -10px;
+    margin-right: -10px;
+}
+h2{
+    margin-top: 200px;
+    color: #fec94e;
+    background-color: #828d95;
+    line-height: 80px;
+    padding-left: 80px;
+    margin-left: -10px;
+    margin-right: -10px;
+}
+.user-card{ 
+    border: 3px solid #3fac9c; 
+    background-color: #828d95;
+    width: 350px;
+    padding: 15px; 
+    margin-left: 40px; 
+    margin-bottom: 20px;
+    border-radius: 10px; 
+    float: left;
+} 
+.actions button{ 
+    margin-right: 10px; 
+    padding: 5px 10px; 
+    cursor: pointer; 
+} 
+input{ 
+    margin: 3px 0; 
+    padding: 5px; 
+    width: 100%; 
+} 
+.top-actions{ 
+    text-align: center; 
+    margin-bottom: 20px; 
+} 
+.top-actions button{ 
+    padding: 10px 15px; 
+    margin: 5px; 
+}
