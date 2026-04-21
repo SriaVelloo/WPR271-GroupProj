@@ -138,4 +138,55 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
      <script src="script.js"></script></body>
+
+    function loadPeopleDropdown() {
+    const people = JSON.parse(localStorage.getItem("people")) || [];
+    const dropdown = document.getElementById("assignedTo");
+
+    dropdown.innerHTML = `<option value="">Unassigned</option>`;
+
+    people.forEach(p => {
+        dropdown.innerHTML += `
+            <option value="${p.id}">
+                ${p.firstName} ${p.lastName}
+            </option>
+        `;
+    });
+}
+
+function loadPeopleDropdown() {
+    const people = JSON.parse(localStorage.getItem("people")) || [];
+    const dropdown = document.getElementById("assignedTo");
+
+    dropdown.innerHTML = `<option value="">Unassigned</option>`;
+
+    people.forEach(p => {
+        dropdown.innerHTML += `
+            <option value="${p.id}">
+                ${p.firstName} ${p.lastName}
+            </option>
+        `;
+    });
+}
+
+function loadProjectsDropdown() {
+    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+    const dropdown = document.getElementById("projectId");
+
+    dropdown.innerHTML = `<option value="">Select a project...</option>`; //clears anything currently inside the dropdown and adds a default placeholder option
+
+    projects.forEach(p => { //loops through every projects
+        dropdown.innerHTML += ` 
+            <option value="${p.id}">
+                ${p.name}
+            </option>
+        `;
+    });
+}
+
+// RUN WHEN PAGE LOADS
+document.addEventListener("DOMContentLoaded", () => {
+    loadPeopleDropdown();
+    loadProjectsDropdown();
+});
 </html>
