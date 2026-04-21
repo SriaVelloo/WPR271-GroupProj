@@ -139,22 +139,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
      <script src="script.js"></script>
         <script src="storage.js"></script>
-</body>
 
-    function loadPeopleDropdown() {
-    const people = JSON.parse(localStorage.getItem("people")) || [];
-    const dropdown = document.getElementById("assignedTo");
+    <script>
 
-    dropdown.innerHTML = `<option value="">Unassigned</option>`;
-
-    people.forEach(p => {
-        dropdown.innerHTML += `
-            <option value="${p.id}">
-                ${p.firstName} ${p.lastName}
-            </option>
-        `;
-    });
-}
 
 function loadPeopleDropdown() {
     const people = JSON.parse(localStorage.getItem("people")) || [];
@@ -191,4 +178,8 @@ document.addEventListener("DOMContentLoaded", () => {
     loadPeopleDropdown();
     loadProjectsDropdown();
 });
+</script>
+</body>
 </html>
+
+    
