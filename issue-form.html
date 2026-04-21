@@ -140,42 +140,125 @@
      <script src="script.js"></script>
 
     <script>
-
-
 function loadPeopleDropdown() {
-    const people = JSON.parse(localStorage.getItem("people")) || [];
+    const people = window.BugTrackerAPI.getAllPeople();
     const dropdown = document.getElementById("assignedTo");
-
+    
     dropdown.innerHTML = `<option value="">Unassigned</option>`;
-
-    people.forEach(p => {
+    
+    people.forEach(person => {
         dropdown.innerHTML += `
-            <option value="${p.id}">
-                ${p.firstName} ${p.lastName}
+            <option value="${person.id}">
+                ${person.name} ${person.surname}
             </option>
         `;
     });
 }
 
 function loadProjectsDropdown() {
-    const projects = JSON.parse(localStorage.getItem("projects")) || [];
+    const projects = window.BugTrackerAPI.getAllProjects();
     const dropdown = document.getElementById("projectId");
-
-    dropdown.innerHTML = `<option value="">Select a project...</option>`; //clears anything currently inside the dropdown and adds a default placeholder option
-
-    projects.forEach(p => { //loops through every projects
-        dropdown.innerHTML += ` 
-            <option value="${p.id}">
-                ${p.name}
+    
+    dropdown.innerHTML = `<option value="">Select a project...</option>`;
+    
+    projects.forEach(project => {
+        dropdown.innerHTML += `
+            <option value="${project.id}">
+                ${project.name}
             </option>
         `;
     });
 }
 
-// RUN WHEN PAGE LOADS
+function setupFormSubmission() {
+    const form = document.getElementById('issueForm');
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('id');
+    
+    if (editId) {
+        const formTitle = document.getElementById('formTitle');
+        if (formTitle) formTitle.innerText = "Edit Issue";
+        
+        const issue = window.BugTrackerAPI.getBugById(editId);
+        if (issue) {
+            document.getElementById('issueId').value = issue.id;
+            document.getElementById('summary').value = issue.summary || '';
+            document.getElementById('description').value = issue.description || '';
+            document.getElementById('priority').value = issue.priority || 'medium';
+            document.getElementById('status').value = issue.status || 'open';
+            document.getElementById('projectId').value = issue.projectId || '';
+            document.getElementById('assignedTo').value = issue.assignedPersonId || '';
+            document.getElementById('targetDate').value = issue.targetResolutionDate || '';
+            document.getElementById('actualDate').value = issue.actualResolutionDate || '';
+            document.getElementById('resolutionSummary').value = issue.resolutionSummary || '';
+        }
+    }
+    
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        
+        const issueData = {
+            id: document.getElementById('issueId').value || null,
+            summary: document.getElementById('summary').value,
+            description: document.getElementById('description').value,
+            priority: document.getElementById('priority').value,
+            status: document.getElementById('status').value,
+            projectId: document.getElementById('projectId').value,
+            assignedPersonId: document.getElementById('assignedTo').value || null,
+            targetResolutionDate: document.getElementById('targetDate').value || null,
+            actualResolutionDate: document.getElementById('actualDate').value || null,
+            resolutionSummary: document.getElementById('resolutionSummary').value || null
+        };
+        
+        if (!issueData.summary) {
+            showToast("Please enter an issue summary", "error");
+            return;
+        }
+        
+        if (!issueData.projectId) {
+            showToast("Please select a project", "error");
+            return;
+        }
+        
+        const success = window.BugTrackerAPI.saveBug(issueData);
+        
+        if (success !== false) {
+            showToast("Issue saved successfully!", "success");
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        } else {
+            showToast("Error saving issue", "error");
+        }
+    };
+}
+
+function showToast(message, type = "success") {
+    const toastEl = document.getElementById("liveToast");
+    const toastBody = toastEl.querySelector(".toast-body");
+    const toastHeader = toastEl.querySelector(".toast-header");
+    
+    toastHeader.classList.remove("bg-danger", "text-white", "bg-success");
+    
+    if (type === "error") {
+        toastHeader.classList.add("bg-danger", "text-white");
+    } else {
+        toastHeader.classList.add("bg-success", "text-white");
+    }
+    
+    toastBody.textContent = message;
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+    
+    setTimeout(() => {
+        toastHeader.classList.remove("bg-danger", "bg-success", "text-white");
+    }, 2000);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     loadPeopleDropdown();
     loadProjectsDropdown();
+    setupFormSubmission();
 });
 </script>
     <script src="storage.js"></script>
