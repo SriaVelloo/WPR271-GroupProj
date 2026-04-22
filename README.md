@@ -131,4 +131,4 @@ The data remains available even after the browser is refreshed, simulating basic
 * Dryden Pienaar – Issue Management Logic
 * Tshifhiwa Nengovhela – Data Handling and Storage
 * Iman Madikoane – Validation and Testing
-* Sria Velloo – Documentation and Presentation
+* Sria Velloo – Documentation, Presentation and Error Handling
