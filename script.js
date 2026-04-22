@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setupFilters();
         loadProjectsForFilter();
     }
-    if (document.getElementById('issueDetailCard')) {
+    if (document.getElementById('issueSummary')) {
         displayIssueDetails();
     }
 });
@@ -45,8 +45,6 @@ function setupIssueForm() {
             if (document.getElementById('issueId')) document.getElementById('issueId').value = issueToEdit.id;
             document.getElementById('summary').value = issueToEdit.summary;
             document.getElementById('description').value = issueToEdit.description;
-            document.getElementById('project').value = issueToEdit.project;
-            document.getElementById('assignee').value = issueToEdit.assignee;
             document.getElementById('priority').value = issueToEdit.priority;
             document.getElementById('targetDate').value = issueToEdit.targetDate;
             document.getElementById('status').value = issueToEdit.status;
@@ -170,17 +168,21 @@ function displayAllIssues() {
     let issues = JSON.parse(localStorage.getItem('issues')) || [];
 
     
-    const projectFilter = document.getElementById('filterProject').value;
-    const priorityFilter = document.getElementById('filterPriority').value;
-    const searchText = document.getElementById('searchInput').value.toLowerCase();
+    const projectFilterEl = document.getElementById('filterProject');
+    const priorityFilterEl = document.getElementById('filterPriority');
+    const searchInputEl = document.getElementById('searchInput');
+    
+    const projectFilter = projectFilterEl ? projectFilterEl.value : 'all';
+    const priorityFilter = priorityFilterEl ? priorityFilterEl.value : 'all';
+    const searchText = searchInputEl && searchInputEl.value ? searchInputEl.value.trim().toLowerCase() : '';
 
     let counts = { open: 0, progress: 0, resolved: 0 };
 
     issues.forEach(issue => {
-        const matchesProject = projectFilter === 'all' || issue.project === projectFilter;
+        const matchesProject = projectFilter === 'all' || issue.projectId === projectFilter;
         const matchesPriority = priorityFilter === 'all' || issue.priority === priorityFilter;
-        const matchesSearch = issue.summary.toLowerCase().includes(searchText) || 
-                              issue.assignee.toLowerCase().includes(searchText);
+        const matchesSearch = (issue.summary && issue.summary.toLowerCase().includes(searchText)) || 
+                              (issue.assignee && issue.assignee.toLowerCase().includes(searchText));
 
         if (matchesProject && matchesPriority && matchesSearch) {
             const clone = template.content.cloneNode(true);
@@ -200,7 +202,7 @@ function displayAllIssues() {
             card.setAttribute('data-issue-id', issue.id);
             
             clone.querySelector('.view-issue-btn').onclick = () => {
-                window.location.href = `issue-detail.html?id=${issue.id}`;
+                window.location.href = `issue-detail.html?id=${encodeURIComponent(issue.id)}`;
             };
             
             const status = issue.status || 'open';
@@ -220,18 +222,18 @@ function displayAllIssues() {
     if (document.getElementById('openCount')) document.getElementById('openCount').innerText = counts.open;
     if (document.getElementById('progressCount')) document.getElementById('progressCount').innerText = counts.progress;
     if (document.getElementById('resolvedCount')) document.getElementById('resolvedCount').innerText = counts.resolved;
-}
 
-if (openList.children.length === 0 && openList.innerHTML === '') {
+    // Show empty state messages if no issues in any column
+    if (openList.children.length === 0) {
         openList.innerHTML = '<div class="text-center text-muted py-4">No open issues</div>';
     }
-    if (progressList.children.length === 0 && progressList.innerHTML === '') {
+    if (progressList.children.length === 0) {
         progressList.innerHTML = '<div class="text-center text-muted py-4">No issues in progress</div>';
     }
-    if (resolvedList.children.length === 0 && resolvedList.innerHTML === '') {
+    if (resolvedList.children.length === 0) {
         resolvedList.innerHTML = '<div class="text-center text-muted py-4">No resolved issues</div>';
     }
-
+}
 
 function getPriorityColor(p) {
     if (p === 'high') return 'danger';
@@ -240,46 +242,90 @@ function getPriorityColor(p) {
 }
 
 function displayIssueDetails() {
+    // Ensure data is synced from storage.js if needed
+    if (typeof loadFromLocalStorage === 'function') {
+        loadFromLocalStorage();
+    }
+    
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
     const issues = JSON.parse(localStorage.getItem('issues')) || [];
-    const issue = issues.find(i => i.id == id);
+    const issue = issues.find(i => String(i.id) === String(id) || i.id == id);
 
-    if (issue) {
-        document.getElementById('issueTitle').innerText = issue.summary;
-        document.getElementById('issueDescription').innerText = issue.description;
-        document.getElementById('issueStatus').innerText = issue.status;
-        document.getElementById('issueAssignee').innerText = issue.assignee;
-        if(document.getElementById('issueProject')) document.getElementById('issueProject').innerText = issue.project;
-        if(document.getElementById('issueTargetDate')) document.getElementById('issueTargetDate').innerText = issue.targetDate;
+    if (!issue) {
+        const titleEl = document.getElementById('issueSummary');
+        const descEl = document.getElementById('issueDescription');
+        if (titleEl) titleEl.textContent = 'Issue not found';
+        if (descEl) descEl.textContent = 'The requested issue could not be found.';
+        return;
+    }
+
+    const titleEl = document.getElementById('issueSummary');
+    const descEl = document.getElementById('issueDescription');
+    const statusBadge = document.getElementById('issueStatusBadge');
+    const priorityEl = document.getElementById('issuePriority');
+    const projEl = document.getElementById('issueProject');
+    const assigneeEl = document.getElementById('issueAssignee');
+    const targetEl = document.getElementById('issueTargetDate');
+    const actualEl = document.getElementById('issueActualDate');
+    const resolutionEl = document.getElementById('issueResolution');
+    
+    if (titleEl) titleEl.textContent = issue.summary || '';
+    if (descEl) descEl.textContent = issue.description || '';
+    if (statusBadge) statusBadge.textContent = issue.status || 'open';
+    if (priorityEl) priorityEl.textContent = issue.priority || '-';
+    if (projEl) projEl.textContent = issue.project || 'Unknown';
+    if (assigneeEl) assigneeEl.textContent = issue.assignee || 'Unassigned';
+    if (targetEl) targetEl.textContent = issue.targetDate || '-';
+    if (actualEl) actualEl.textContent = issue.actualResolutionDate || '-';
+    if (resolutionEl) resolutionEl.textContent = issue.resolutionSummary || 'No resolution summary provided yet.';
         
-        document.getElementById('deleteIssueBtn').onclick = function() {
+    const deleteBtn = document.getElementById('deleteIssueBtn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function() {
             if (confirm("Delete this issue?")) {
-                const updated = issues.filter(i => i.id != id);
+                const updated = issues.filter(i => String(i.id) !== String(id));
                 localStorage.setItem('issues', JSON.stringify(updated));
                 window.location.href = 'index.html';
             }
-        };
+        });
+    }
 
-        document.getElementById('editIssueBtn').onclick = function() {
-            window.location.href = `issue-form.html?id=${id}`;
-        };
+    const editBtn = document.getElementById('editIssueBtn');
+    if (editBtn) {
+        editBtn.addEventListener('click', function() {
+            window.location.href = 'issue-form.html?id=' + encodeURIComponent(id);
+        });
     }
 }
 
 function setupFilters() {
-    document.getElementById('filterProject').onchange = displayAllIssues;
-    document.getElementById('filterPriority').onchange = displayAllIssues;
-    document.getElementById('searchInput').oninput = displayAllIssues;
-    if (document.getElementById('resetFilters')) {
-        document.getElementById('resetFilters').onclick = () => {
-            document.getElementById('filterProject').value = 'all';
-            document.getElementById('filterPriority').value = 'all';
-            document.getElementById('searchInput').value = '';
+    const pf = document.getElementById('filterProject');
+    const pr = document.getElementById('filterPriority');
+    const si = document.getElementById('searchInput');
+    if (pf) {
+        pf.addEventListener('change', displayAllIssues);
+        pf.value = 'all';
+    }
+    if (pr) {
+        pr.addEventListener('change', displayAllIssues);
+        pr.value = 'all';
+    }
+    if (si) {
+        si.addEventListener('input', displayAllIssues);
+        si.value = '';
+    }
+    const rf = document.getElementById('resetFilters');
+    if (rf) {
+        rf.addEventListener('click', function() {
+            if (pf) pf.value = 'all';
+            if (pr) pr.value = 'all';
+            if (si) si.value = '';
             displayAllIssues();
-        };
+        });
     }
 }
+
 
 function showToast(message) {
     const toastEl = document.getElementById('liveToast');
