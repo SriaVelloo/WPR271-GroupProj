@@ -1,4 +1,3 @@
-
 // DATA STORE 
 let appData = {
     bugs: [],
@@ -15,10 +14,37 @@ function loadFromLocalStorage() {
         initDefaultData();
     }
     updateOverdueStatus();   // set overdue flags on load
+
+    syncToIssuesStorage();
 }
 
 function saveToLocalStorage() {
     localStorage.setItem('BugTrackerData', JSON.stringify(appData));
+}
+
+function syncToIssuesStorage() {
+    const issues = appData.bugs.map(bug => ({
+        id: bug.id,
+        summary: bug.summary,
+        description: bug.description,
+        priority: bug.priority,
+        status: bug.status === 'overdue' ? 'open' : bug.status,
+        projectId: bug.projectId,
+        project: getProjectById(bug.projectId)?.name || 'Unknown',
+        assignedPersonId: bug.assignedPersonId,
+        assignee: getPersonById(bug.assignedPersonId)?.name || 'Unassigned',
+        targetResolutionDate: bug.targetResolutionDate,
+        targetDate: bug.targetResolutionDate,
+        actualResolutionDate: bug.actualResolutionDate,
+        resolutionSummary: bug.resolutionSummary,
+        createdAt: bug.createdAt,
+        createdDate: bug.createdAt
+    }));
+    localStorage.setItem('issues', JSON.stringify(issues));
+    
+    // Also sync projects separately
+    localStorage.setItem('projects', JSON.stringify(appData.projects));
+    localStorage.setItem('people', JSON.stringify(appData.people));
 }
 
 //  DEFAULT DATA (10+ issues, 3 people, 2 projects)
@@ -322,7 +348,7 @@ function deleteProject(id) {
 
 // EXPOSE GLOBAL API 
 window.BugTrackerAPI = {
-window.BugTrackerAPI = {
+
     // Bugs
     getAllBugs,
     getBugById,
