@@ -32,7 +32,7 @@ function syncToIssuesStorage() {
         projectId: bug.projectId,
         project: getProjectById(bug.projectId)?.name || 'Unknown',
         assignedPersonId: bug.assignedPersonId,
-        assignee: getPersonById(bug.assignedPersonId)?.name || 'Unassigned',
+        assignee: (function() { let p = getPersonById(bug.assignedPersonId); return p ? p.name + ' ' + p.surname : 'Unassigned'; })(),
         targetResolutionDate: bug.targetResolutionDate,
         targetDate: bug.targetResolutionDate,
         actualResolutionDate: bug.actualResolutionDate,
